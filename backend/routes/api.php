@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\RelatorioController;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\CursoController;
@@ -20,4 +21,9 @@ Route::controller(AlunoController::class)->group(function () {
     Route::get('/aluno/{matricula}','show')->name('aluno.show');
     Route::put('/aluno/{matricula}','update')->name('aluno.update');
     Route::delete('/aluno/{matricula}','destroy')->name('aluno.destroy');
+});
+
+Route::controller(RelatorioController::class)->group(function () {
+    Route::get('/contaAlunosPorCurso','contaAlunosPorCurso')->name('relatorios.contaAlunosPorCurso');
+    Route::get('/listaAlunosPorCurso', 'listaAlunosPorCurso')->name('relatorios.listaAlunosPorCurso');
 });

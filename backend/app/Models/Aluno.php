@@ -14,10 +14,12 @@ class Aluno extends Model
         'endereco',
         'codigo_curso',
     ];
+
     /**
-     * Get the post that owns the comment.
+     * Summary of curso
+     * @return BelongsTo<Curso, Aluno>
      */
-    public function post(): BelongsTo
+    public function curso(): BelongsTo
     {
         return $this->belongsTo(Curso::class, 'codigo_curso');
     }

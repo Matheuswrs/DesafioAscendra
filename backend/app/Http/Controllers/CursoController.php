@@ -12,7 +12,17 @@ class CursoController extends Controller
 {
     public function index(Request $request):LengthAwarePaginator {
         $itensPerPage = $request->query('itensPerPage', 5);
-        $cursos = Curso::orderBy('codigo_curso')->paginate($itensPerPage);
+        $codigoCurso = $request->query('codigo');
+        $nome = $request->query('nome');
+
+        $cursos = Curso::when($codigoCurso, function($query, $codigoCurso) {
+            return $query->where('codigo_curso', $codigoCurso);
+        })
+        ->when($nome, function($query, $nome) {
+            return $query->where('nome', 'like', '%'.$nome.'%');
+        })
+        ->orderBy('nome', 'asc')
+        ->paginate($itensPerPage);
 
         return $cursos;
     }
