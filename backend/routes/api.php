@@ -9,6 +9,7 @@ use App\Http\Controllers\AlunoController;
 Route::controller(CursoController::class)->group(function () {
 
     Route::get('/cursos', 'index')->name('cursos.index');
+    Route::get('/cursos/all','allCursos')->name('cursos.allCursos');
     Route::post('/curso', 'store')->name('cursos.store');
     Route::get('/curso/{codigo}','show')->name('cursos.show');
     Route::put('/curso/{codigo}','update')->name('cursos.update');

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -29,13 +30,14 @@ class AlunoController extends Controller
         })
         ->when($curso, function($query, $curso) {
             if(is_numeric($curso)) {
-                return $query->where('codigo_curso', $curso);
+                return $query->where('codigo_curso', 'like', '%'.$curso.'%');
             } else {
                 return $query->whereHas('curso',function($q) use ($curso) {
                     $q->where('nome','like', '%'.$curso.'%');
                 });
             }
         })
+        ->with('curso')
         ->orderBy('nome', 'asc')
         ->paginate($itensPerPage);
 
@@ -55,7 +57,7 @@ class AlunoController extends Controller
         return $aluno;
     }
 
-    public function update($matricula, Request $request): RedirectResponse
+    public function update($matricula, Request $request): JsonResponse
     {
         $aluno = Aluno::findOrFail($matricula);
         $aluno->nome = $request->input('nome');
@@ -63,14 +65,18 @@ class AlunoController extends Controller
         $aluno->codigo_curso = $request->input('codigo_curso');
         $aluno->save();
 
-        return redirect('/api/alunos');
+        return response()->json([
+            'message' => 'Aluno editado com sucesso!'
+        ],200);
     }
 
-    public function destroy($matricula): RedirectResponse
+    public function destroy($matricula): JsonResponse
     {
         $aluno = Aluno::findOrFail($matricula);
         $aluno->delete();
 
-        return redirect('/api/alunos');
+        return response()->json([
+            'message'=> 'Aluno deletado com sucesso!'
+        ],200);
     }
 }

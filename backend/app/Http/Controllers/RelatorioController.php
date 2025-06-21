@@ -11,18 +11,20 @@ use App\Models\Curso;
 
 class RelatorioController extends Controller
 {
-    public function contaAlunosPorCurso(Request $request):LengthAwarePaginator {
+    public function contaAlunosPorCurso(Request $request):LengthAwarePaginator
+    {
         $itensPerPage = $request->query('itensPerPage', 5);
 
         $quantidadeAlunosPorCurso = Aluno::join('cursos', 'alunos.codigo_curso', '=', 'cursos.codigo_curso')
-        ->select('cursos.nome as curso', DB::raw('count(*) as total'))
+        ->select('alunos.codigo_curso','cursos.nome as curso', DB::raw('count(*) as total'))
         ->groupBy('cursos.nome')
         ->paginate($itensPerPage);
 
         return $quantidadeAlunosPorCurso;
     }
 
-    public function listaAlunosPorCurso(Request $request):LengthAwarePaginator {
+    public function listaAlunosPorCurso(Request $request):LengthAwarePaginator
+    {
         $cursoDefault = Curso::orderBy('nome', 'asc')->first();
 
         $itensPerPage = $request->query('itensPerPage',5);

@@ -1,42 +1,71 @@
-import React, { useEffect, useState } from 'react'
-import 'bootstrap/dist/css/bootstrap.min.css';
+import React from 'react'
 
-const TableComponent = () => {
-    const [headers, setHeaders] = useState([]);
-    const [data, setData] = useState([]);
+const TableComponent = ({ data, columns, columnsLabel, onPageChange, customRender }) => {
 
-    useEffect(() => {
-        const mockData = [{'Teste1': 'joao', 'Teste2': '3', 'Teste3': 4}, 
-            {'Teste1': 'joaso', 'Teste2': '23', 'Teste3': 434}];
-        
-        setData(mockData);
-        setHeaders(Object.keys(mockData[0]));
-    }, []);
+    if (!data || data.length === 0) {
+        return <p>Nenhum dado disponível</p>;
+    }
+
+    const rows = data.data
+    const totalPages = data.last_page
+    const currentPage = data.current_page
 
     return (
-        <table className="table">
-            <thead>
-                <tr>
-                    {
-                        headers.map(header => (
-                            <th key={header} scope='col'>{header}</th>
-                        ))
-                    }
-                </tr>
-            </thead>
-            
-            <tbody className="table-group-divider">
-                {
-                    data.map((row, index) => (
-                        <tr key={index}>
-                            {headers.map(col => (
-                                <td key={col}>{row[col]}</td>
-                            ))}
-                        </tr>
-                    ))
-                }
-            </tbody>
-        </table>
+        <>
+            {data.data && data.data.length === 0 ? (
+                <div className="alert alert-warning mt-3" role="alert">
+                    Nenhum dado encontrado!
+                </div>
+            ) : (
+                <div className='container'>
+                    <table className="table">
+                        <thead>
+                            <tr>
+                                {
+                                    columns.map(column => (
+                                        <th key={column} scope='col'>{columnsLabel[column] || column}</th>
+                                    ))
+                                }
+                            </tr>
+                        </thead>
+
+                        <tbody className="table-group-divider">
+                            {
+                                rows.map((row, index) => (
+                                    <tr key={index}>
+                                        {columns.map(column => (
+                                            <td key={column}>
+                                                {customRender?.[column]
+                                                    ? customRender[column](row)
+                                                    : row[column]
+                                                }
+                                            </td>
+                                        ))}
+                                    </tr>
+                                ))
+                            }
+                        </tbody>
+                    </table>
+
+                    {onPageChange && totalPages >= 1 && (
+                        <nav className='d-grid gap-2 d-md-flex justify-content-md-end'>
+                            <ul className="pagination">
+                                {[...Array(totalPages)].map((arr, index) => {
+                                    const page = index + 1;
+                                    return (
+                                        <li key={page} className={`page-item ${page === currentPage ? 'active' : ''}`}>
+                                            <button className="page-link" onClick={() => onPageChange(page)}>
+                                                {page}
+                                            </button>
+                                        </li>
+                                    );
+                                })}
+                            </ul>
+                        </nav>
+                    )}
+                </div>
+            )}
+        </>
     )
 }
 

@@ -5,7 +5,12 @@
   font-family: "Poppins", sans-serif;
 }
 
-body {
-  min-height: 100vh;
-  width: 100vw;
+.content {
+  transition: margin 0.3s ease-in-out;
+}
+
+@media (min-width: 768px) {
+  .content {
+    margin-left: 250px;
+  }
 }

@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('cursos', function (Blueprint $table) {
             $table->id('codigo_curso');
-            $table->string('nome')->nullable(false)->comment('O campo nome deve ser preenchido');
+            $table->string('nome')->unique()->nullable(false)->comment('O campo nome deve ser preenchido');
             $table->timestamps();
         });
     }
