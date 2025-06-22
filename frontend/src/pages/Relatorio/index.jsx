@@ -34,34 +34,44 @@ function Relatorio() {
     }
 
     async function getListaCountAlunosPorCurso(page = 1, itensPorPagina = 5) {
-        const resp = await api.get(`/contaAlunosPorCurso?page=${page}&itensPerPage=${itensPorPagina}`);
-
-        setListaCountAlunosPorCurso(resp.data);
-        setCurrentPageListaCount(page);
+        try {
+            const resp = await api.get(`/contaAlunosPorCurso?page=${page}&itensPerPage=${itensPorPagina}`);
+    
+            setListaCountAlunosPorCurso(resp.data);
+            setCurrentPageListaCount(page);
+        } catch (error) {
+            alert('Ocorreu um erro inesperado ao listar.');
+        }
     }
 
     async function getListaAlunosPorCurso(page = 1, codigo, itensPorPagina) {
-        const resp = await api.get(`/listaAlunosPorCurso?page=${page}&codigo=${codigo}&itensPerPage=${itensPorPagina}`);
+        if(!codigo || !itensPorPagina) {
+            return;
+        }
+        try {
+            const resp = await api.get(`/listaAlunosPorCurso?page=${page}&codigo=${codigo}&itensPerPage=${itensPorPagina}`);
 
-        setListaAlunosPorCurso(resp.data);
-        setCurrentPageListaAlunosPorCurso(page);
+            setListaAlunosPorCurso(resp.data);
+            setCurrentPageListaAlunosPorCurso(page);
+        } catch(error) {
+            alert('Ocorreu um erro inesperado ao listar.');
+        }
     }
 
     useEffect(() => {
         getAllCursos();
         getListaCountAlunosPorCurso();
-        getListaAlunosPorCurso();
     }, []);
 
     const handlePageChangeCountAlunosPorCurso = (page) => {
         if(page !== currentPageListaCount) {
-            getListaCountAlunosPorCurso(page);
+            getListaCountAlunosPorCurso(page, quantidadeItensCount);
         }
     }
 
     const handlePageChangeListaAlunosPorCurso = (page) => {
         if(page !== currentPageListaAlunosPorCurso) {
-            getListaAlunosPorCurso(page);
+            getListaAlunosPorCurso(page, cursoSelecionado, quantidadeItensLista);
         }
     }
 
@@ -70,7 +80,7 @@ function Relatorio() {
         setCursoSelecionado(codigoCurso);
 
         setCurrentPageListaAlunosPorCurso(1);
-        getListaAlunosPorCurso(currentPageListaAlunosPorCurso, codigoCurso, quantidadeItensLista);
+        getListaAlunosPorCurso(1, codigoCurso, quantidadeItensLista);
     }
 
     const handleChangePageSizeListaCountAlunos = () => {
@@ -78,7 +88,7 @@ function Relatorio() {
         setQuantidadeItensCount(quantidade);
         setCurrentPageListaCount(1);
 
-        getListaCountAlunosPorCurso(currentPageListaCount, quantidade);
+        getListaCountAlunosPorCurso(1, quantidade);
     }
 
     const handleChangePageSizeListaAlunos = () => {
@@ -86,7 +96,7 @@ function Relatorio() {
         setQuantidadeItensLista(quantidade);
         setCurrentPageListaAlunosPorCurso(1);
 
-        getListaAlunosPorCurso(currentPageListaAlunosPorCurso, cursoSelecionado, quantidade);
+        getListaAlunosPorCurso(1, cursoSelecionado, quantidade);
     }
     
   return (

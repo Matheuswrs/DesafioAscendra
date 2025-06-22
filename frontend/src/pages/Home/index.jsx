@@ -435,6 +435,7 @@ const Home = () => {
           updateAluno={updateAluno}
           clearUpdateAluno={clearUpdateAluno}
           allCursos={allCursos}
+          quantidadeItensPorPagina={quantidadeItensListaAlunos}
           dataFiltroAluno={dataFiltroAluno}
         />
         <TableComponent
